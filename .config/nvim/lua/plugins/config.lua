@@ -13,16 +13,14 @@ return {
             },
         },
     },
-    { "ThePrimeagen/vim-be-good" },
     {
         "CopilotC-Nvim/CopilotChat.nvim",
         dependencies = {
-            { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
+            { "nvim-lua/plenary.nvim", branch = "master" },
         },
         opts = {
-            model = "claude-sonnet-4",
-            -- See Configuration section for options
+            model = "claude-sonnet-4.6",
+            trusted_tools = { "file", "glob", "grep" },
         },
-        -- See Commands section for default commands if you want to lazy load on them
     },
 }
