@@ -9,7 +9,7 @@ Configuration for my macOS dev machine, applied with
 | `[tools]` | Runtimes and CLI tools (go, node, python, java, groovy, starship, terraform, kubectl, aws-cli, claude, wsget), pinned in `mise.lock` |
 | `[bootstrap.packages]` | Homebrew formulae, taps and casks (mise installs them; no `brew` needed) |
 | `[bootstrap.repos]` | Zsh plugins, as plain git checkouts in `~/.local/share/zsh/plugins` |
-| `[dotfiles]` | Symlinks from `$HOME` into this repo (zsh, git, Neovim, starship), plus the `PATH` line in `~/.zprofile` |
+| `[dotfiles]` | Symlinks from `$HOME` into this repo (zsh, git, Neovim, starship, Claude Code), plus the `PATH` line in `~/.zprofile` |
 | `[bootstrap.mise_shell_activate]` | mise shims in `~/.zprofile` for login shells and GUI apps |
 | `[bootstrap.macos.launchd.agents]` | Loads SSH keys from the macOS Keychain into the agent at login |
 | `[bootstrap.settings.macos.*]` | Dock, Finder, key repeat, dark mode, hot corner, Caps Lock → Control |
@@ -130,6 +130,16 @@ To add a key, put it in `~/.ssh` with a passphrase, then add its name to the hoo
 Host-specific entries stay in the part of `~/.ssh/config` that mise doesn't manage, and out of
 this repo. Until the keys are in place, git can't sign commits or reach GitHub over SSH.
 That includes `mise bootstrap --update`, because the git config rewrites GitHub URLs to SSH.
+
+### Claude Code
+
+`~/.claude/settings.json` and `~/.claude/CLAUDE.md` are symlinks to [`claude/`](claude/).
+The folder isn't named `.claude/`, because Claude Code would also load that as this repo's
+own project settings. Sessions, history, caches and plugins stay local in `~/.claude`.
+
+If Claude Code ever replaces a symlink with a regular file when it saves settings,
+`mise bootstrap status --missing` reports it. Copy the file back into `claude/` and run
+`mise bootstrap --only dotfiles`.
 
 ### macOS settings
 
