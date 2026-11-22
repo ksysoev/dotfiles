@@ -2,6 +2,47 @@
 
 lockfile_version = 4
 
+[[tools."github:ksysoev/wsget"]]
+version = "0.11.0"
+backend = "github:ksysoev/wsget"
+specifiers = ["latest"]
+unsupported_platforms = ["windows-x64"]
+
+[tools."github:ksysoev/wsget"."platforms.linux-arm64"]
+checksum = "sha256:942c5d283878713b467269eddb73edeb062b3b2e9d9107ab2692887b605b2dbd"
+checksum_source = "mise-versions"
+url = "https://github.com/ksysoev/wsget/releases/download/v0.11.0/wsget_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/ksysoev/wsget/releases/assets/497816122"
+
+[tools."github:ksysoev/wsget"."platforms.linux-arm64-musl"]
+checksum = "sha256:942c5d283878713b467269eddb73edeb062b3b2e9d9107ab2692887b605b2dbd"
+checksum_source = "mise-versions"
+url = "https://github.com/ksysoev/wsget/releases/download/v0.11.0/wsget_Linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/ksysoev/wsget/releases/assets/497816122"
+
+[tools."github:ksysoev/wsget"."platforms.linux-x64"]
+checksum = "sha256:f0f2485416a24b44febfba65ff650f450b26df1906520160159b142192653d8e"
+checksum_source = "mise-versions"
+url = "https://github.com/ksysoev/wsget/releases/download/v0.11.0/wsget_Linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/ksysoev/wsget/releases/assets/497816124"
+
+[tools."github:ksysoev/wsget"."platforms.linux-x64-musl"]
+checksum = "sha256:f0f2485416a24b44febfba65ff650f450b26df1906520160159b142192653d8e"
+checksum_source = "mise-versions"
+url = "https://github.com/ksysoev/wsget/releases/download/v0.11.0/wsget_Linux_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/ksysoev/wsget/releases/assets/497816124"
+
+[tools."github:ksysoev/wsget"."platforms.macos-arm64"]
+checksum = "sha256:a19675e75ea60c4fc9d42ecae5fa210363ad9a43ce18fc685d1bf2c248478152"
+url = "https://github.com/ksysoev/wsget/releases/download/v0.11.0/wsget_Darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/ksysoev/wsget/releases/assets/497816126"
+
+[tools."github:ksysoev/wsget"."platforms.macos-x64"]
+checksum = "sha256:e30ab1d56cdf4d04ca1d78278d5be527a817720cbd339e7ecfef0a78386dbde4"
+checksum_source = "mise-versions"
+url = "https://github.com/ksysoev/wsget/releases/download/v0.11.0/wsget_Darwin_x86_64.tar.gz"
+url_api = "https://api.github.com/repos/ksysoev/wsget/releases/assets/497816123"
+
 [[tools.go]]
 version = "1.27.4"
 backend = "core:go"
