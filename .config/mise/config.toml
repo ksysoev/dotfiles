@@ -96,6 +96,59 @@ zshrc = false      # .zshrc is tracked and activates mise itself
 zprofile = "shims" # login shells and GUI-launched apps see mise tools
 
 # ---------------------------------------------------------------------------
+# macOS preferences (mirrors this machine). Some need a logout to take effect.
+# ---------------------------------------------------------------------------
+[bootstrap.settings.macos.dock]
+autohide = false
+orientation = "right"
+magnification = false
+
+[bootstrap.settings.macos.finder]
+preferred_view_style = "icon"
+
+# Raw defaults. Sizes and key repeat are floats because macOS stores them as reals.
+[bootstrap.settings.macos.defaults.NSGlobalDomain]
+AppleInterfaceStyle = "Dark"
+KeyRepeat = 5.0
+InitialKeyRepeat = 68.0
+
+[bootstrap.settings.macos.defaults."com.apple.dock"]
+tilesize = 44.0
+largesize = 16.0
+"wvous-br-corner" = 14 # bottom-right hot corner: Quick Note
+
+# Modifier keys, as System Settings > Keyboard > Modifier Keys stores them.
+# HID usages: 0x700000039 Caps Lock, 0x7000000E2/E3 L Option/Cmd,
+# 0x7000000E4 R Control, 0x7000000E6/E7 R Option/Cmd.
+
+# Built-in keyboard: Caps Lock -> Control
+[[bootstrap.settings.macos.defaults_entries]]
+domain = "NSGlobalDomain"
+key = "com.apple.keyboard.modifiermapping.0-0-0"
+host = "current"
+value = [
+  { HIDKeyboardModifierMappingSrc = 30064771298, HIDKeyboardModifierMappingDst = 30064771298 },
+  { HIDKeyboardModifierMappingSrc = 30064771299, HIDKeyboardModifierMappingDst = 30064771299 },
+  { HIDKeyboardModifierMappingSrc = 30064771303, HIDKeyboardModifierMappingDst = 30064771303 },
+  { HIDKeyboardModifierMappingSrc = 30064771302, HIDKeyboardModifierMappingDst = 30064771302 },
+  { HIDKeyboardModifierMappingSrc = 30064771129, HIDKeyboardModifierMappingDst = 30064771300 },
+]
+
+# External PC-layout keyboard (vendor 12625, product 16400):
+# Caps Lock -> Control, and Cmd <-> Option on both sides
+[[bootstrap.settings.macos.defaults_entries]]
+domain = "NSGlobalDomain"
+key = "com.apple.keyboard.modifiermapping.12625-16400-0"
+host = "current"
+value = [
+  { HIDKeyboardModifierMappingSrc = 30064771303, HIDKeyboardModifierMappingDst = 30064771302 },
+  { HIDKeyboardModifierMappingSrc = 30064771129, HIDKeyboardModifierMappingDst = 30064771300 },
+  { HIDKeyboardModifierMappingSrc = 30064771298, HIDKeyboardModifierMappingDst = 30064771299 },
+  { HIDKeyboardModifierMappingSrc = 30064771302, HIDKeyboardModifierMappingDst = 30064771303 },
+  { HIDKeyboardModifierMappingSrc = 30064771299, HIDKeyboardModifierMappingDst = 30064771298 },
+]
+
+# ---------------------------------------------------------------------------
 # Hooks and the final task (run on every `mise bootstrap`; keep them idempotent)
 # ---------------------------------------------------------------------------
 [bootstrap.hooks.pre-dotfiles]

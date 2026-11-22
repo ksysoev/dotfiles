@@ -1,107 +1,104 @@
 # dotfiles
 
-Configuration for my macOS dev machine: zsh, Neovim (LazyVim), git, and the tool
-versions installed on it.
+Configuration for my macOS dev machine, applied with
+[`mise bootstrap`](https://mise.jdx.dev/bootstrap.html). One config file,
+[`.config/mise/config.toml`](.config/mise/config.toml), declares the whole machine:
 
-- **[mise](https://mise.jdx.dev)** installs runtimes and CLI tools at pinned versions,
-  and runs the repo tasks (`link`, `tools`, `doctor`).
-- **Homebrew** installs GUI apps and system libraries.
-- **Symlinks** connect each config in this repo to its place in `$HOME`.
+| Section | What it manages |
+|---|---|
+| `[tools]` | Runtimes and CLI tools (go, node, python, java, groovy, starship), pinned in `mise.lock` |
+| `[bootstrap.packages]` | Homebrew formulae, taps and casks (mise installs them; no `brew` needed) |
+| `[bootstrap.repos]` | Zsh plugins, as plain git checkouts in `~/.local/share/zsh/plugins` |
+| `[dotfiles]` | Symlinks from `$HOME` into this repo, plus the Homebrew `PATH` line in `~/.zprofile` |
+| `[bootstrap.mise_shell_activate]` | mise shims in `~/.zprofile` for login shells and GUI apps |
+| `[bootstrap.settings.macos.*]` | Dock, Finder, key repeat, dark mode, hot corner, Caps Lock → Control |
+| `[bootstrap.hooks]` | Backs up files that would block a symlink (`bootstrap/backup-conflicts.sh`) |
+| `[tasks.bootstrap]` | Final steps: global gitignore, Neovim plugins at their `lazy-lock.json` versions |
 
-> **Migration in progress.** The move to mise is happening in phases. Right now mise
-> manages the language runtimes, and oh-my-zsh and most CLI tools still come from
-> Homebrew. Some setup steps are still manual; a single `bootstrap.sh` comes later.
-
-## Layout
-
-| Path | Linked to | What it is |
-|---|---|---|
-| `.zshrc` | `~/.zshrc` | zsh config (oh-my-zsh, mise activation) |
-| `.gitignore_global` | `~/.gitignore_global` | global gitignore (`core.excludesfile`) |
-| `.config/nvim/` | `~/.config/nvim` | LazyVim config; plugin versions pinned in `lazy-lock.json` |
-| `.config/mise/` | `~/.config/mise` | global mise tools (`config.toml`) and exact versions (`mise.lock`) |
-| `.oh-my-zsh/custom/plugins/` | via `ZSH_CUSTOM` | zsh plugins as git submodules |
-| `.Brewfile` | not linked | Homebrew packages |
-| `mise.toml` | not linked | repo tasks |
-| `mise-tasks/` | not linked | scripts the tasks run |
-
-## Setting up a new machine
-
-The repo **must be cloned to `~/Documents/Dev/dotfiles`**, because `ZSH_CUSTOM` in
-`.zshrc` points there.
+## Setting up a new Mac
 
 ```sh
-# 1. Command line tools and Homebrew
-xcode-select --install
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-eval "$(/opt/homebrew/bin/brew shellenv)"
-brew install mise
-
-# 2. Clone with submodules. Use HTTPS here: SSH keys and 1Password aren't set up yet.
-git clone --recurse-submodules https://github.com/ksysoev/dotfiles.git ~/Documents/Dev/dotfiles
-cd ~/Documents/Dev/dotfiles
-
-# 3. oh-my-zsh, without letting it replace .zshrc
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
-
-# 4. Link configs, install tools and packages
-mise trust                         # allow this repo's mise.toml to run tasks
-mise run link                      # symlink configs into $HOME
-mise run tools                     # install runtimes from mise.lock
-brew bundle --file=.Brewfile       # Homebrew packages
-git config --global core.excludesfile ~/.gitignore_global
-
-# 5. Start a new shell and install Neovim plugins at their pinned versions
-exec zsh
-nvim --headless "+Lazy! restore" +qa
+curl -fsSL https://raw.githubusercontent.com/ksysoev/dotfiles/main/bootstrap.sh | bash
 ```
 
-`mise run link` never deletes anything. If a real file or folder is already where a
-link should go, it renames it to `<name>.bak.<timestamp>` first.
+[`bootstrap.sh`](bootstrap.sh):
+1. installs the Xcode Command Line Tools (asks for your password);
+2. installs mise into `~/.local/bin`;
+3. runs `mise bootstrap --from <this repo>`. That clones the repo to `~/Documents/Dev/dotfiles`,
+   links `~/.config/mise` to `.config/mise/` and applies everything in the table above.
+
+Then **log out and back in** so the keyboard and other macOS settings take effect.
+
+To see what would happen first, run the script with `--dry-run`.
+
+If a real file is already where a symlink should go (for example a `~/.zshrc` an
+installer created), the hook moves it to `<name>.bak.<timestamp>` before linking.
+Nothing is deleted.
 
 ## Everyday use
 
-Run `mise tasks` to list the tasks. They're defined in `mise.toml` and run from the
-repo root.
+All commands work from any directory.
 
 | Command | What it does |
 |---|---|
-| `mise run doctor` | Checks that every link is in place (`link.sh --check`) and runs `mise doctor` |
-| `mise run link` | Creates or repairs symlinks; safe to run again |
-| `mise run tools` | Installs anything in the mise config that's missing |
+| `mise bootstrap plan` | Shows what applying would change |
+| `mise bootstrap status --missing` | Drift check: lists every part, exits 1 if anything differs |
+| `mise bootstrap` | Applies the config (safe to re-run) |
+| `mise bootstrap --update` | Pulls this repo, then applies it |
+| `mise bootstrap --only dotfiles,repos` | Applies only some parts |
 
-### Adding or changing a tool
+### Changing tools
 
-`~/.config/mise` is a symlink into this repo, so `mise use -g` edits the tracked config:
-
-```sh
-mise use -g ripgrep@latest     # adds it to .config/mise/config.toml and mise.lock
-git add .config/mise && git commit -m "Add ripgrep"
-```
-
-### Updating tools
+`~/.config/mise` is a symlink into this repo, so mise's own commands edit the tracked files:
 
 ```sh
-mise outdated                  # see what's newer within the configured ranges
-mise outdated --bump           # include versions outside the ranges
-mise upgrade                   # upgrade within the configured ranges; updates mise.lock
-mise upgrade --bump            # also move past ranges (e.g. python 3.11 -> 3.12)
+mise use -g ripgrep@latest         # add a tool (writes config.toml + mise.lock)
+mise outdated                      # updates within the configured ranges
+mise outdated --bump               # include versions outside them (e.g. python 3.11 -> 3.15)
+mise upgrade                       # upgrade and update mise.lock
 ```
 
-Commit `.config/mise/mise.lock` afterwards so other machines get the same versions.
+Commit `.config/mise/` afterwards.
+
+### Changing packages
+
+Add or remove a `"brew:<formula>"` / `"brew-cask:<cask>"` line in `[bootstrap.packages]`,
+then run `mise bootstrap --only packages`. Tap formulae use the full name
+(`"brew:ksysoev/wsget/wsget"`).
+
+- Removing a line does **not** uninstall the package. Run
+  `mise bootstrap packages prune --manager brew --dry-run` to see unlisted packages.
+- `mise bootstrap packages upgrade` upgrades them.
+
+### Adding a dotfile
+
+1. Put the file in the repo at the same path it has under `$HOME`.
+2. Add it to `[dotfiles]` with a `~/` source path:
+   `"~/.config/foo" = { source = "~/Documents/Dev/dotfiles/.config/foo" }`.
+   Relative sources don't work here: they resolve against the `~/.config/mise`
+   symlink and produce a link that points at itself.
+3. Run `mise bootstrap --only dotfiles`.
+
+### macOS settings
+
+To find a value to add, change it in System Settings, then compare
+`defaults read <domain>` (or `defaults -currentHost read -g`) before and after.
+
+- The Caps Lock remap is stored per keyboard model. The built-in keyboard is
+  `0-0-0`, and the external one is `<vendor>-<product>-0`.
+- Values macOS stores as reals (Dock sizes, key repeat) must be written as floats, such as `44.0`.
+  Otherwise `status` reports them as different.
+- mise never deletes preferences, and never restarts Dock or Finder. Log out, or run
+  `killall Dock Finder` after a change.
+
 Update Neovim plugins inside nvim with `:Lazy update`, then commit `lazy-lock.json`.
-
-### Adding a new dotfile
-
-1. Put the file in the repo at the same path it has under `$HOME`, for example
-   `.config/starship.toml`.
-2. Add that path to the `LINKS` list in `mise-tasks/link.sh`.
-3. Run `mise run link`. If a real file is already there, it's renamed to `.bak.<timestamp>`.
 
 ## Troubleshooting
 
-- **A tool resolves to the wrong version or path.** Run `type -a <tool>`; the mise copy
-  should come first. Then run `mise doctor`.
-- **`mise run` says the config isn't trusted.** Run `mise trust` in the repo root.
-- **`command not found: mise` errors.** These shouldn't appear: `.zshrc` skips mise when
-  it isn't installed. Install it with `brew install mise`.
+- **A tool resolves to the wrong version.** Run `type -a <tool>`. The mise copy should come
+  first. Then run `mise doctor`.
+- **`mise bootstrap` stops at dotfiles with "refusing to overwrite".** Something replaced a
+  link after the backup hook ran. Move the file away and re-run. Don't use
+  `--force-dotfiles`: it deletes the file without a backup.
+- **The keyboard remap doesn't work after bootstrap.** Log out and back in, or unplug and
+  replug the keyboard.
