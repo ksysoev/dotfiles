@@ -35,6 +35,39 @@ url = "https://dl.google.com/go/go1.27.4.darwin-amd64.tar.gz"
 checksum = "sha256:178ab98950ac69ab25069307dc6ade79f3816e414cce95b4da166a115cde1e7e"
 url = "https://dl.google.com/go/go1.27.4.windows-amd64.zip"
 
+[[tools.groovy]]
+version = "4.0.33"
+backend = "vfox:jdx/vfox-groovy"
+specifiers = ["4.0"]
+
+[tools.groovy."platforms.linux-arm64"]
+checksum = "sha256:395a69a81d5e9915d360d630663c1d98534c9dec134cb267798e49370855d93d"
+url = "https://archive.apache.org/dist/groovy/4.0.33/distribution/apache-groovy-binary-4.0.33.zip"
+
+[tools.groovy."platforms.linux-arm64-musl"]
+checksum = "sha256:395a69a81d5e9915d360d630663c1d98534c9dec134cb267798e49370855d93d"
+url = "https://archive.apache.org/dist/groovy/4.0.33/distribution/apache-groovy-binary-4.0.33.zip"
+
+[tools.groovy."platforms.linux-x64"]
+checksum = "sha256:395a69a81d5e9915d360d630663c1d98534c9dec134cb267798e49370855d93d"
+url = "https://archive.apache.org/dist/groovy/4.0.33/distribution/apache-groovy-binary-4.0.33.zip"
+
+[tools.groovy."platforms.linux-x64-musl"]
+checksum = "sha256:395a69a81d5e9915d360d630663c1d98534c9dec134cb267798e49370855d93d"
+url = "https://archive.apache.org/dist/groovy/4.0.33/distribution/apache-groovy-binary-4.0.33.zip"
+
+[tools.groovy."platforms.macos-arm64"]
+checksum = "sha256:395a69a81d5e9915d360d630663c1d98534c9dec134cb267798e49370855d93d"
+url = "https://archive.apache.org/dist/groovy/4.0.33/distribution/apache-groovy-binary-4.0.33.zip"
+
+[tools.groovy."platforms.macos-x64"]
+checksum = "sha256:395a69a81d5e9915d360d630663c1d98534c9dec134cb267798e49370855d93d"
+url = "https://archive.apache.org/dist/groovy/4.0.33/distribution/apache-groovy-binary-4.0.33.zip"
+
+[tools.groovy."platforms.windows-x64"]
+checksum = "sha256:395a69a81d5e9915d360d630663c1d98534c9dec134cb267798e49370855d93d"
+url = "https://archive.apache.org/dist/groovy/4.0.33/distribution/apache-groovy-binary-4.0.33.zip"
+
 [[tools.java]]
 version = "temurin-17.0.21.1+2"
 backend = "core:java"

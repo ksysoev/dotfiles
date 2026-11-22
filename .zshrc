@@ -102,20 +102,8 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias ls="lsd"
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
-export CPPFLAGS="-I/opt/homebrew/opt/openjdk@17/include"
-export JAVA_HOME=/opt/homebrew/opt/openjdk@17/
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-#export PATH="/opt/homebrew/opt/node@16/bin:$PATH"
-
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 
 # mise: tool versions and env from ~/.config/mise/config.toml.
-# Keep last so mise-managed tools take precedence over brew/nvm/sdkman.
+# Keep last so mise-managed tools take precedence over brew.
 eval "$(mise activate zsh)"

@@ -10,6 +10,7 @@ go = "latest"
 node = "lts"
 python = "3.11"
 java = "temurin-17"
+groovy = "4.0"
 
 [env]
 # Binaries installed with `go install`
