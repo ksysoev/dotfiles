@@ -29,6 +29,50 @@ starship = "latest"
 _.path = ["~/go/bin"]
 
 # ---------------------------------------------------------------------------
+# Packages (Homebrew formulae and casks, installed by mise without needing brew)
+# Removing a line does not uninstall; use `mise bootstrap packages prune`.
+# ---------------------------------------------------------------------------
+[bootstrap.packages]
+"brew:aws-sam-cli" = "latest"
+"brew:fd" = "latest"
+"brew:ffmpeg" = "latest"
+"brew:gh" = "latest"
+"brew:ghostscript" = "latest"
+"brew:glow" = "latest"
+"brew:gnu-sed" = "latest"
+"brew:golangci-lint" = "latest"
+"brew:helm" = "latest"
+"brew:htop" = "latest"
+"brew:hugo" = "latest"
+"brew:imagemagick" = "latest"
+"brew:img2pdf" = "latest"
+"brew:lsd" = "latest"
+"brew:mockery" = "latest"
+"brew:neovim" = "latest"
+"brew:pi-coding-agent" = "latest"
+"brew:poppler" = "latest"
+"brew:protobuf" = "latest"
+"brew:redis" = "latest"
+"brew:ripgrep" = "latest"
+"brew:slides" = "latest"
+"brew:staticcheck" = "latest"
+"brew:stockfish" = "latest"
+"brew:tmux" = "latest"
+"brew:unzip" = "latest"
+"brew:websocat" = "latest"
+"brew:wget" = "latest"
+# From taps
+"brew:anomalyco/tap/opencode" = "latest"
+"brew:hashicorp/tap/packer" = "latest"
+"brew:ksysoev/authkeeper/authkeeper" = "latest"
+"brew:ksysoev/make-it-public/make-it-public" = "latest"
+"brew:ksysoev/wsget/wsget" = "latest"
+# Apps
+"brew-cask:copilot-cli" = "latest"
+"brew-cask:ghostty" = "latest"
+"brew-cask:wezterm" = "latest"
+
+# ---------------------------------------------------------------------------
 # Git checkouts
 # ---------------------------------------------------------------------------
 [bootstrap.repos]
