@@ -135,7 +135,9 @@ That includes `mise bootstrap --update`, because the git config rewrites GitHub 
 
 ### Claude Code
 
-`~/.claude/settings.json` and `~/.claude/CLAUDE.md` are symlinks to [`claude/`](claude/).
+`~/.claude/settings.json`, `~/.claude/CLAUDE.md` and `~/.claude/themes/` are symlinks to [`claude/`](claude/).
+The active theme is `custom:tokyonight-moon` ([`claude/themes/tokyonight-moon.json`](claude/themes/tokyonight-moon.json)),
+the Tokyo Night Moon palette LazyVim uses by default. Pick another in `/theme`.
 The folder isn't named `.claude/`, because Claude Code would also load that as this repo's
 own project settings. Sessions, history, caches and plugins stay local in `~/.claude`.
 
