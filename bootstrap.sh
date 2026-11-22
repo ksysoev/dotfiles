@@ -21,6 +21,11 @@ if [[ "$(uname -s)" != "Darwin" ]]; then
   echo "bootstrap.sh is for macOS" >&2
   exit 1
 fi
+# macOS 15+ ships /usr/bin/jq (used by the dotfiles backup hook).
+if (($(sw_vers -productVersion | cut -d. -f1) < 15)); then
+  echo "bootstrap.sh needs macOS 15 or later (found $(sw_vers -productVersion))" >&2
+  exit 1
+fi
 
 # --- 1. Xcode Command Line Tools ---------------------------------------------
 if ! xcode-select -p >/dev/null 2>&1; then
@@ -28,12 +33,16 @@ if ! xcode-select -p >/dev/null 2>&1; then
   # This marker file makes softwareupdate list the CLT package.
   marker=/tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
   touch "$marker"
+  trap 'rm -f "$marker"' EXIT # remove it even if a step below fails
+  # macOS's own sort supports -V (version order).
   label="$(softwareupdate --list 2>/dev/null |
-    sed -n 's/^\* Label: \(Command Line Tools.*\)$/\1/p' | sort -V | tail -n1)"
+    sed -n 's/^\* Label: \(Command Line Tools.*\)$/\1/p' | sort -V | tail -n1)" || true
   if [[ -n "$label" ]]; then
-    sudo softwareupdate --install "$label" --verbose
+    # On failure, fall through to the GUI installer below instead of exiting.
+    sudo softwareupdate --install "$label" --verbose || true
   fi
   rm -f "$marker"
+  trap - EXIT
   if ! xcode-select -p >/dev/null 2>&1; then
     # Fall back to the GUI installer and wait for it.
     xcode-select --install || true

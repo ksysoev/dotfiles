@@ -18,6 +18,8 @@ Configuration for my macOS dev machine, applied with
 
 ## Setting up a new Mac
 
+Requires macOS 15 or later.
+
 ```sh
 curl -fsSL https://raw.githubusercontent.com/ksysoev/dotfiles/main/bootstrap.sh | bash
 ```
