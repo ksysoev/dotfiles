@@ -116,3 +116,6 @@ export SDKMAN_DIR="$HOME/.sdkman"
 
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 
+# mise: tool versions and env from ~/.config/mise/config.toml.
+# Keep last so mise-managed tools take precedence over brew/nvm/sdkman.
+eval "$(mise activate zsh)"

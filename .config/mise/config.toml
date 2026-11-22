@@ -1,0 +1,16 @@
+# Global mise config — symlinked to ~/.config/mise/config.toml by `mise run link`.
+# Machine-wide tool versions. Exact resolved versions are pinned in mise.lock.
+
+[settings]
+lockfile = true
+
+[tools]
+# Language runtimes
+go = "latest"
+node = "lts"
+python = "3.11"
+java = "temurin-17"
+
+[env]
+# Binaries installed with `go install`
+_.path = ["~/go/bin"]
