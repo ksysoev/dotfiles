@@ -9,11 +9,11 @@ Configuration for my macOS dev machine, applied with
 | `[tools]` | Runtimes and CLI tools (go, node, python, java, groovy, starship), pinned in `mise.lock` |
 | `[bootstrap.packages]` | Homebrew formulae, taps and casks (mise installs them; no `brew` needed) |
 | `[bootstrap.repos]` | Zsh plugins, as plain git checkouts in `~/.local/share/zsh/plugins` |
-| `[dotfiles]` | Symlinks from `$HOME` into this repo, plus the Homebrew `PATH` line in `~/.zprofile` |
+| `[dotfiles]` | Symlinks from `$HOME` into this repo (zsh, git, Neovim, starship), plus the `PATH` line in `~/.zprofile` |
 | `[bootstrap.mise_shell_activate]` | mise shims in `~/.zprofile` for login shells and GUI apps |
 | `[bootstrap.settings.macos.*]` | Dock, Finder, key repeat, dark mode, hot corner, Caps Lock → Control |
 | `[bootstrap.hooks]` | Backs up files that would block a symlink (`bootstrap/backup-conflicts.sh`) |
-| `[tasks.bootstrap]` | Final steps: global gitignore, Neovim plugins at their `lazy-lock.json` versions |
+| `[tasks.bootstrap]` | Final step: Neovim plugins at their `lazy-lock.json` versions |
 
 ## Setting up a new Mac
 
@@ -47,6 +47,11 @@ All commands work from any directory.
 | `mise bootstrap --update` | Pulls this repo, then applies it |
 | `mise bootstrap --only dotfiles,repos` | Applies only some parts |
 
+### Updating mise itself
+
+mise is installed in `~/.local/bin` by its own installer, not by Homebrew. Update it with
+`mise self-update`.
+
 ### Changing tools
 
 `~/.config/mise` is a symlink into this repo, so mise's own commands edit the tracked files:
@@ -78,6 +83,19 @@ then run `mise bootstrap --only packages`. Tap formulae use the full name
    Relative sources don't work here: they resolve against the `~/.config/mise`
    symlink and produce a link that points at itself.
 3. Run `mise bootstrap --only dotfiles`.
+
+### Git
+
+Git reads `~/.config/git/`, which is a symlink to [`.config/git/`](.config/git/):
+
+| File | Purpose |
+|---|---|
+| `config` | Identity, SSH commit signing, the gh credential helper, the SSH `insteadOf` rewrite |
+| `ignore` | Global gitignore (git's default location, so there's no `core.excludesfile`) |
+| `allowed_signers` | Lets `git log --show-signature` verify your own SSH-signed commits locally |
+
+Keep `~/.gitconfig` absent. If it exists, git reads it after this config and
+`git config --global` writes to it instead of the repo.
 
 ### macOS settings
 

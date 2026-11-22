@@ -68,11 +68,11 @@ _.path = ["~/go/bin"]
 # ---------------------------------------------------------------------------
 [dotfiles]
 "~/.zshrc" = { source = "~/Documents/Dev/dotfiles/.zshrc" }
-"~/.gitignore_global" = { source = "~/Documents/Dev/dotfiles/.gitignore_global" }
+"~/.config/git" = { source = "~/Documents/Dev/dotfiles/.config/git" }
 "~/.config/nvim" = { source = "~/Documents/Dev/dotfiles/.config/nvim" }
 "~/.config/starship.toml" = { source = "~/Documents/Dev/dotfiles/.config/starship.toml" }
-# Login shells and GUI-launched apps: Homebrew on PATH (no brew CLI needed)
-"~/.zprofile/homebrew" = { line = 'export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"' }
+# Login shells and GUI-launched apps: mise and Homebrew on PATH (no brew CLI needed)
+"~/.zprofile/homebrew" = { line = 'export PATH="$HOME/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"' }
 
 [bootstrap.mise_shell_activate]
 zshrc = false      # .zshrc is tracked and activates mise itself
@@ -140,7 +140,4 @@ run = "~/Documents/Dev/dotfiles/bootstrap/backup-conflicts.sh"
 
 [tasks.bootstrap]
 description = "Final machine setup steps"
-run = [
-  "git config --global core.excludesfile ~/.gitignore_global",
-  "nvim --headless '+Lazy! restore' +qa",
-]
+run = "nvim --headless '+Lazy! restore' +qa"

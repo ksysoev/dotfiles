@@ -3,6 +3,7 @@
 
 # --- PATH --------------------------------------------------------------------
 path=(
+  ~/.local/bin  # mise (installed by bootstrap.sh)
   /opt/homebrew/bin
   /opt/homebrew/sbin
   /opt/homebrew/opt/gnu-sed/libexec/gnubin
