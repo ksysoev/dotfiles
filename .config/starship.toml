@@ -1,0 +1,26 @@
+# Starship prompt, styled after the oh-my-zsh "gozilla" theme:
+#   ➜  dir (branch)                                   ✭ ✱
+"$schema" = "https://starship.rs/config-schema.json"
+
+add_newline = false
+format = "[➜ ](bold red) $directory$git_branch"
+right_format = "$git_status"
+
+[directory]
+truncation_length = 1
+truncate_to_repo = false
+style = "cyan"
+format = "[$path]($style) "
+
+[git_branch]
+style = "bold blue"
+format = '[\($branch\)]($style) '
+
+[git_status]
+format = "$staged$modified$deleted$renamed$conflicted$untracked"
+staged = "[ ✈](cyan)"
+modified = "[ ✭](yellow)"
+deleted = "[ ✗](red)"
+renamed = "[ ➦](blue)"
+conflicted = "[ ✂](magenta)"
+untracked = "[ ✱](bright-black)"

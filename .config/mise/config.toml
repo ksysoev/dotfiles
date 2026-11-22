@@ -1,0 +1,176 @@
+# Global mise config: tools and the whole machine bootstrap.
+#
+# ~/.config/mise is a symlink to this directory (`mise bootstrap --from` creates it),
+# so `mise use -g` and `mise upgrade` edit these tracked files. Exact tool versions
+# are pinned in mise.lock.
+#
+#   mise bootstrap plan              # preview what would change
+#   mise bootstrap                   # apply everything below
+#   mise bootstrap status --missing  # drift check (exit 1 if anything is off)
+#
+# Paths in [dotfiles] must start with ~/ — relative sources resolve against the
+# ~/.config/mise symlink and break.
+
+[settings]
+lockfile = true
+
+[tools]
+# Language runtimes
+go = "latest"
+node = "lts"
+python = "3.11"
+java = "temurin-17"
+groovy = "4.0"
+# Shell
+starship = "latest"
+# Git (the git config requires the LFS filter)
+git-lfs = "latest"
+# Infrastructure
+terraform = "latest"
+kubectl = "latest"
+aws-cli = "latest"
+# CLI tools from GitHub releases
+claude = "latest"
+"github:ksysoev/wsget" = "latest"
+
+[env]
+# Binaries installed with `go install`
+_.path = ["~/go/bin"]
+
+# ---------------------------------------------------------------------------
+# Packages (Homebrew formulae and casks, installed by mise without needing brew)
+# Removing a line does not uninstall; use `mise bootstrap packages prune`.
+# ---------------------------------------------------------------------------
+[bootstrap.packages]
+"brew:fd" = "latest"
+"brew:gh" = "latest"
+"brew:glow" = "latest"
+"brew:gnu-sed" = "latest"
+"brew:golangci-lint" = "latest"
+"brew:htop" = "latest"
+"brew:hugo" = "latest"
+"brew:imagemagick" = "latest"
+"brew:img2pdf" = "latest"
+"brew:lsd" = "latest"
+"brew:mockery" = "latest"
+"brew:neovim" = "latest"
+"brew:ripgrep" = "latest"
+"brew:staticcheck" = "latest"
+"brew:unzip" = "latest"
+"brew:wget" = "latest"
+# Apps (adopt = take over an app that was installed by hand)
+"brew-cask:docker-desktop" = { version = "latest", adopt = true }
+"brew-cask:ghostty" = "latest"
+
+# ---------------------------------------------------------------------------
+# Git checkouts
+# ---------------------------------------------------------------------------
+[bootstrap.repos]
+"~/.local/share/zsh/plugins/zsh-autosuggestions" = { url = "https://github.com/zsh-users/zsh-autosuggestions.git", depth = 1 }
+"~/.local/share/zsh/plugins/zsh-syntax-highlighting" = { url = "https://github.com/zsh-users/zsh-syntax-highlighting.git", depth = 1 }
+
+# ---------------------------------------------------------------------------
+# Dotfiles (symlinks into this repo). Conflicting real files are moved to
+# <file>.bak.<timestamp> by the pre-dotfiles hook before linking.
+# ---------------------------------------------------------------------------
+[dotfiles]
+"~/.zshrc" = { source = "~/Documents/Dev/dotfiles/.zshrc" }
+"~/.config/git" = { source = "~/Documents/Dev/dotfiles/.config/git" }
+"~/.config/nvim" = { source = "~/Documents/Dev/dotfiles/.config/nvim" }
+"~/.config/starship.toml" = { source = "~/Documents/Dev/dotfiles/.config/starship.toml" }
+# Claude Code user settings and instructions (not sessions, history or caches)
+"~/.claude/settings.json" = { source = "~/Documents/Dev/dotfiles/claude/settings.json" }
+"~/.claude/CLAUDE.md" = { source = "~/Documents/Dev/dotfiles/claude/CLAUDE.md" }
+# Login shells and GUI-launched apps: mise and Homebrew on PATH (no brew CLI needed)
+"~/.zprofile/homebrew" = { line = 'export PATH="$HOME/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"' }
+
+# SSH: keys live in ~/.ssh, passphrases in the macOS Keychain. Host-specific
+# entries stay in the unmanaged part of ~/.ssh/config (kept out of this repo).
+[dotfiles."~/.ssh/config/keychain"]
+block = """
+Host *
+	AddKeysToAgent yes
+	UseKeychain yes
+	IdentityFile ~/.ssh/github_ed25519
+	IdentityFile ~/.ssh/digitalocean_ed25519
+"""
+
+[bootstrap.mise_shell_activate]
+zshrc = false      # .zshrc is tracked and activates mise itself
+zprofile = "shims" # login shells and GUI-launched apps see mise tools
+
+# ---------------------------------------------------------------------------
+# macOS preferences (mirrors this machine). Some need a logout to take effect.
+# ---------------------------------------------------------------------------
+[bootstrap.settings.macos.dock]
+autohide = false
+orientation = "right"
+magnification = false
+
+[bootstrap.settings.macos.finder]
+preferred_view_style = "icon"
+
+# Raw defaults. Sizes and key repeat are floats because macOS stores them as reals.
+[bootstrap.settings.macos.defaults.NSGlobalDomain]
+AppleInterfaceStyle = "Dark"
+KeyRepeat = 5.0
+InitialKeyRepeat = 68.0
+
+[bootstrap.settings.macos.defaults."com.apple.dock"]
+tilesize = 44.0
+largesize = 16.0
+"wvous-br-corner" = 14 # bottom-right hot corner: Quick Note
+
+# Modifier keys, as System Settings > Keyboard > Modifier Keys stores them.
+# HID usages: 0x700000039 Caps Lock, 0x7000000E2/E3 L Option/Cmd,
+# 0x7000000E4 R Control, 0x7000000E6/E7 R Option/Cmd.
+
+# Built-in keyboard: Caps Lock -> Control
+[[bootstrap.settings.macos.defaults_entries]]
+domain = "NSGlobalDomain"
+key = "com.apple.keyboard.modifiermapping.0-0-0"
+host = "current"
+value = [
+  { HIDKeyboardModifierMappingSrc = 30064771298, HIDKeyboardModifierMappingDst = 30064771298 },
+  { HIDKeyboardModifierMappingSrc = 30064771299, HIDKeyboardModifierMappingDst = 30064771299 },
+  { HIDKeyboardModifierMappingSrc = 30064771303, HIDKeyboardModifierMappingDst = 30064771303 },
+  { HIDKeyboardModifierMappingSrc = 30064771302, HIDKeyboardModifierMappingDst = 30064771302 },
+  { HIDKeyboardModifierMappingSrc = 30064771129, HIDKeyboardModifierMappingDst = 30064771300 },
+]
+
+# External PC-layout keyboard (vendor 12625, product 16400):
+# Caps Lock -> Control, and Cmd <-> Option on both sides
+[[bootstrap.settings.macos.defaults_entries]]
+domain = "NSGlobalDomain"
+key = "com.apple.keyboard.modifiermapping.12625-16400-0"
+host = "current"
+value = [
+  { HIDKeyboardModifierMappingSrc = 30064771303, HIDKeyboardModifierMappingDst = 30064771302 },
+  { HIDKeyboardModifierMappingSrc = 30064771129, HIDKeyboardModifierMappingDst = 30064771300 },
+  { HIDKeyboardModifierMappingSrc = 30064771298, HIDKeyboardModifierMappingDst = 30064771299 },
+  { HIDKeyboardModifierMappingSrc = 30064771302, HIDKeyboardModifierMappingDst = 30064771303 },
+  { HIDKeyboardModifierMappingSrc = 30064771299, HIDKeyboardModifierMappingDst = 30064771298 },
+]
+
+# Load SSH keys whose passphrases are in the Keychain at login, so git can sign
+# commits before the first ssh connection.
+[bootstrap.macos.launchd.agents.ssh-load-keychain]
+program = "/usr/bin/ssh-add"
+args = ["--apple-load-keychain"]
+run_at_load = true
+
+# ---------------------------------------------------------------------------
+# Hooks and the final task (run on every `mise bootstrap`; keep them idempotent)
+# ---------------------------------------------------------------------------
+[bootstrap.hooks.pre-dotfiles]
+description = "Back up real files that would block dotfile symlinks"
+run = "~/Documents/Dev/dotfiles/bootstrap/backup-conflicts.sh"
+
+# Same keys as the ~/.ssh/config block above.
+[bootstrap.hooks.post-dotfiles]
+description = "Sync SSH keys with the iCloud Drive backup (Backups/ssh)"
+run = "~/Documents/Dev/dotfiles/bootstrap/ssh-keys.sh github_ed25519 digitalocean_ed25519"
+
+[tasks.bootstrap]
+description = "Final machine setup steps"
+run = "nvim --headless '+Lazy! restore' +qa"
