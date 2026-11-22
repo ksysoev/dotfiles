@@ -24,6 +24,7 @@ groovy = "4.0"
 # Shell
 starship = "latest"
 # CLI tools from GitHub releases
+claude = "latest"
 "github:ksysoev/wsget" = "latest"
 
 [env]
