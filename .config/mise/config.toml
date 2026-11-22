@@ -74,6 +74,17 @@ _.path = ["~/go/bin"]
 # Login shells and GUI-launched apps: mise and Homebrew on PATH (no brew CLI needed)
 "~/.zprofile/homebrew" = { line = 'export PATH="$HOME/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"' }
 
+# SSH: keys live in ~/.ssh, passphrases in the macOS Keychain. Host-specific
+# entries stay in the unmanaged part of ~/.ssh/config (kept out of this repo).
+[dotfiles."~/.ssh/config/keychain"]
+block = """
+Host *
+	AddKeysToAgent yes
+	UseKeychain yes
+	IdentityFile ~/.ssh/github_ed25519
+	IdentityFile ~/.ssh/digitalocean_ed25519
+"""
+
 [bootstrap.mise_shell_activate]
 zshrc = false      # .zshrc is tracked and activates mise itself
 zprofile = "shims" # login shells and GUI-launched apps see mise tools
@@ -130,6 +141,13 @@ value = [
   { HIDKeyboardModifierMappingSrc = 30064771302, HIDKeyboardModifierMappingDst = 30064771303 },
   { HIDKeyboardModifierMappingSrc = 30064771299, HIDKeyboardModifierMappingDst = 30064771298 },
 ]
+
+# Load SSH keys whose passphrases are in the Keychain at login, so git can sign
+# commits before the first ssh connection.
+[bootstrap.macos.launchd.agents.ssh-load-keychain]
+program = "/usr/bin/ssh-add"
+args = ["--apple-load-keychain"]
+run_at_load = true
 
 # ---------------------------------------------------------------------------
 # Hooks and the final task (run on every `mise bootstrap`; keep them idempotent)

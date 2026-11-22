@@ -11,6 +11,7 @@ Configuration for my macOS dev machine, applied with
 | `[bootstrap.repos]` | Zsh plugins, as plain git checkouts in `~/.local/share/zsh/plugins` |
 | `[dotfiles]` | Symlinks from `$HOME` into this repo (zsh, git, Neovim, starship), plus the `PATH` line in `~/.zprofile` |
 | `[bootstrap.mise_shell_activate]` | mise shims in `~/.zprofile` for login shells and GUI apps |
+| `[bootstrap.macos.launchd.agents]` | Loads SSH keys from the macOS Keychain into the agent at login |
 | `[bootstrap.settings.macos.*]` | Dock, Finder, key repeat, dark mode, hot corner, Caps Lock → Control |
 | `[bootstrap.hooks]` | Backs up files that would block a symlink (`bootstrap/backup-conflicts.sh`) |
 | `[tasks.bootstrap]` | Final step: Neovim plugins at their `lazy-lock.json` versions |
@@ -96,6 +97,26 @@ Git reads `~/.config/git/`, which is a symlink to [`.config/git/`](.config/git/)
 
 Keep `~/.gitconfig` absent. If it exists, git reads it after this config and
 `git config --global` writes to it instead of the repo.
+
+### SSH keys
+
+The private keys aren't in this repo. Keep a copy somewhere safe, such as an encrypted
+backup. On a new Mac, after `bootstrap.sh` has run:
+
+```sh
+cp <backup>/github_ed25519* <backup>/digitalocean_ed25519* ~/.ssh/
+chmod 600 ~/.ssh/github_ed25519 ~/.ssh/digitalocean_ed25519
+ssh-add --apple-use-keychain ~/.ssh/github_ed25519 ~/.ssh/digitalocean_ed25519
+```
+
+The last command stores the passphrases in the macOS Keychain. After that:
+- the `Host *` block that mise manages in `~/.ssh/config` sets `UseKeychain` and lists both keys;
+- the `dev.mise.ssh-load-keychain` LaunchAgent loads them into the agent at every login,
+  so git can sign commits right away.
+
+Host-specific entries stay in the part of `~/.ssh/config` that mise doesn't manage, and out of
+this repo. Until the keys are in place, git can't sign commits or reach GitHub over SSH.
+That includes `mise bootstrap --update`, because the git config rewrites GitHub URLs to SSH.
 
 ### macOS settings
 
