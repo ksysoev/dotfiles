@@ -6,7 +6,7 @@ Configuration for my macOS dev machine, applied with
 
 | Section | What it manages |
 |---|---|
-| `[tools]` | Runtimes and CLI tools (go, node, python, java, groovy, starship), pinned in `mise.lock` |
+| `[tools]` | Runtimes and CLI tools (go, node, python, java, groovy, starship, terraform, kubectl, aws-cli, claude, wsget), pinned in `mise.lock` |
 | `[bootstrap.packages]` | Homebrew formulae, taps and casks (mise installs them; no `brew` needed) |
 | `[bootstrap.repos]` | Zsh plugins, as plain git checkouts in `~/.local/share/zsh/plugins` |
 | `[dotfiles]` | Symlinks from `$HOME` into this repo (zsh, git, Neovim, starship), plus the `PATH` line in `~/.zprofile` |

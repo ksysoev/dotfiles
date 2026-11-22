@@ -23,6 +23,10 @@ java = "temurin-17"
 groovy = "4.0"
 # Shell
 starship = "latest"
+# Infrastructure
+terraform = "latest"
+kubectl = "latest"
+aws-cli = "latest"
 # CLI tools from GitHub releases
 claude = "latest"
 "github:ksysoev/wsget" = "latest"
@@ -52,7 +56,8 @@ _.path = ["~/go/bin"]
 "brew:staticcheck" = "latest"
 "brew:unzip" = "latest"
 "brew:wget" = "latest"
-# Apps
+# Apps (adopt = take over an app that was installed by hand)
+"brew-cask:docker-desktop" = { version = "latest", adopt = true }
 "brew-cask:ghostty" = "latest"
 
 # ---------------------------------------------------------------------------
