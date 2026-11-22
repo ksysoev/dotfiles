@@ -1,5 +1,15 @@
-# Global mise config — symlinked to ~/.config/mise/config.toml by `mise run link`.
-# Machine-wide tool versions. Exact resolved versions are pinned in mise.lock.
+# Global mise config: tools and the whole machine bootstrap.
+#
+# ~/.config/mise is a symlink to this directory (`mise bootstrap --from` creates it),
+# so `mise use -g` and `mise upgrade` edit these tracked files. Exact tool versions
+# are pinned in mise.lock.
+#
+#   mise bootstrap plan              # preview what would change
+#   mise bootstrap                   # apply everything below
+#   mise bootstrap status --missing  # drift check (exit 1 if anything is off)
+#
+# Paths in [dotfiles] must start with ~/ — relative sources resolve against the
+# ~/.config/mise symlink and break.
 
 [settings]
 lockfile = true
@@ -11,7 +21,17 @@ node = "lts"
 python = "3.11"
 java = "temurin-17"
 groovy = "4.0"
+# Shell
+starship = "latest"
 
 [env]
 # Binaries installed with `go install`
 _.path = ["~/go/bin"]
+
+# ---------------------------------------------------------------------------
+# Git checkouts
+# ---------------------------------------------------------------------------
+[bootstrap.repos]
+"~/.local/share/zsh/plugins/zsh-autosuggestions" = { url = "https://github.com/zsh-users/zsh-autosuggestions.git", depth = 1 }
+"~/.local/share/zsh/plugins/zsh-syntax-highlighting" = { url = "https://github.com/zsh-users/zsh-syntax-highlighting.git", depth = 1 }
+

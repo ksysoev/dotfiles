@@ -1,111 +1,71 @@
-# If you come from bash you might have to change your $PATH.
-export PATH=$HOME/go/bin:$PATH
-PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
+# zsh config. Plugins are plain git checkouts managed by `mise bootstrap`
+# ([bootstrap.repos] in ~/.config/mise/config.toml); the prompt is starship.
 
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
+# --- PATH --------------------------------------------------------------------
+path=(
+  /opt/homebrew/bin
+  /opt/homebrew/sbin
+  /opt/homebrew/opt/gnu-sed/libexec/gnubin
+  $path
+)
+typeset -U path  # drop duplicates
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="gozilla"
+# --- History -----------------------------------------------------------------
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=10000
+setopt extended_history       # save timestamps
+setopt hist_expire_dups_first # drop duplicates first when trimming
+setopt hist_ignore_dups       # don't record a command twice in a row
+setopt hist_ignore_space      # commands starting with a space aren't saved
+setopt hist_verify            # show !! expansions before running
+setopt share_history          # share history between open shells
+setopt interactive_comments
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+# --- Keys --------------------------------------------------------------------
+bindkey -e
+# Up/Down search history for commands starting with what's typed
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey '^[[A' up-line-or-beginning-search
+bindkey '^[OA' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
+bindkey '^[OB' down-line-or-beginning-search
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+# --- Completion --------------------------------------------------------------
+autoload -Uz compinit && compinit
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
 
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-export ZSH_CUSTOM="$HOME/Documents/Dev/dotfiles/.oh-my-zsh/custom"
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting zsh-z colored-man-pages)
-
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+# --- Aliases -----------------------------------------------------------------
 alias ls="lsd"
+alias gco="git checkout"
 
-export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
+# Colored man pages
+man() {
+  LESS_TERMCAP_md=$'\e[1;31m' LESS_TERMCAP_me=$'\e[0m' \
+  LESS_TERMCAP_us=$'\e[1;32m' LESS_TERMCAP_ue=$'\e[0m' \
+  LESS_TERMCAP_so=$'\e[1;33m' LESS_TERMCAP_se=$'\e[0m' \
+  command man "$@"
+}
 
+# --- Tools -------------------------------------------------------------------
 # mise: tool versions and env from ~/.config/mise/config.toml.
-# Keep last so mise-managed tools take precedence over brew.
+# Before starship, which mise installs.
 if (( $+commands[mise] )); then
   eval "$(mise activate zsh)"
+  eval "$(mise hook-env -s zsh)"  # put mise tools on PATH now, not at first prompt
 fi
+
+if (( $+commands[starship] )); then
+  eval "$(starship init zsh)"
+fi
+
+# --- Plugins (syntax highlighting must be last) ------------------------------
+_zsh_plugins=~/.local/share/zsh/plugins
+for _plugin in zsh-autosuggestions/zsh-autosuggestions.zsh \
+               zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; do
+  [[ -r $_zsh_plugins/$_plugin ]] && source $_zsh_plugins/$_plugin
+done
+unset _zsh_plugins _plugin
