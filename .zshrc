@@ -106,4 +106,6 @@ export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 
 # mise: tool versions and env from ~/.config/mise/config.toml.
 # Keep last so mise-managed tools take precedence over brew.
-eval "$(mise activate zsh)"
+if (( $+commands[mise] )); then
+  eval "$(mise activate zsh)"
+fi

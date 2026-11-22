@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Symlink dotfiles from this repo into $HOME.
-#   link.sh          create/repair links; existing real files are moved to <file>.bak
+#   link.sh          create/repair links; existing files are moved to <file>.bak.<timestamp>
 #   link.sh --check  only report status; exits 1 if anything is not linked
 set -euo pipefail
 
@@ -15,6 +15,19 @@ LINKS=(
   .config/nvim
   .config/mise
 )
+
+# backup moves $HOME/<rel> aside to a unique timestamped path, so an existing
+# backup is never overwritten and a directory is never moved into another one.
+backup() {
+  local rel="$1" bak
+  bak="$rel.bak.$(date +%Y%m%d-%H%M%S)"
+  if [[ -e "$HOME/$bak" || -L "$HOME/$bak" ]]; then
+    echo "ERROR    backup target exists: $bak" >&2
+    return 1
+  fi
+  mv -- "$HOME/$rel" "$HOME/$bak"
+  echo "backup   $rel -> $bak"
+}
 
 status=0
 for rel in "${LINKS[@]}"; do
@@ -34,8 +47,7 @@ for rel in "${LINKS[@]}"; do
 
   mkdir -p "$(dirname "$dst")"
   if [[ -e "$dst" || -L "$dst" ]]; then
-    mv "$dst" "$dst.bak"
-    echo "backup   $rel -> $rel.bak"
+    backup "$rel"
   fi
   ln -s "$src" "$dst"
   echo "linked   $rel"
