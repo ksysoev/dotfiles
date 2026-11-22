@@ -13,7 +13,7 @@ Configuration for my macOS dev machine, applied with
 | `[bootstrap.mise_shell_activate]` | mise shims in `~/.zprofile` for login shells and GUI apps |
 | `[bootstrap.macos.launchd.agents]` | Loads SSH keys from the macOS Keychain into the agent at login |
 | `[bootstrap.settings.macos.*]` | Dock, Finder, key repeat, dark mode, hot corner, Caps Lock → Control |
-| `[bootstrap.hooks]` | Backs up files that would block a symlink (`bootstrap/backup-conflicts.sh`) |
+| `[bootstrap.hooks]` | Backs up files that would block a symlink; syncs SSH keys with iCloud Drive |
 | `[tasks.bootstrap]` | Final step: Neovim plugins at their `lazy-lock.json` versions |
 
 ## Setting up a new Mac
@@ -100,19 +100,32 @@ Keep `~/.gitconfig` absent. If it exists, git reads it after this config and
 
 ### SSH keys
 
-The private keys aren't in this repo. Keep a copy somewhere safe, such as an encrypted
-backup. On a new Mac, after `bootstrap.sh` has run:
+The private keys aren't in this repo. They're backed up to **iCloud Drive → `Backups/ssh`**,
+and every `mise bootstrap` syncs them with
+[`bootstrap/ssh-keys.sh`](bootstrap/ssh-keys.sh), run as a `post-dotfiles` hook:
+
+| State | What happens |
+|---|---|
+| Key only in iCloud (a new Mac) | Restored to `~/.ssh` with `600` permissions. Files stored only in the cloud are downloaded first. |
+| Key only in `~/.ssh` | Backed up to iCloud, but only if it has a passphrase |
+| In both, identical | Nothing |
+| In both, different | Warning; neither copy is overwritten |
+
+The keys are encrypted with their passphrases. The passphrases themselves live in the macOS
+Keychain, not in the backup. On a new Mac, run this once after bootstrap, unless iCloud
+Keychain has already synced the passphrases (bootstrap tells you if it's needed):
 
 ```sh
-cp <backup>/github_ed25519* <backup>/digitalocean_ed25519* ~/.ssh/
-chmod 600 ~/.ssh/github_ed25519 ~/.ssh/digitalocean_ed25519
 ssh-add --apple-use-keychain ~/.ssh/github_ed25519 ~/.ssh/digitalocean_ed25519
 ```
 
-The last command stores the passphrases in the macOS Keychain. After that:
+After that:
 - the `Host *` block that mise manages in `~/.ssh/config` sets `UseKeychain` and lists both keys;
 - the `dev.mise.ssh-load-keychain` LaunchAgent loads them into the agent at every login,
   so git can sign commits right away.
+
+To add a key, put it in `~/.ssh` with a passphrase, then add its name to the hook in
+`[bootstrap.hooks.post-dotfiles]` and to the `~/.ssh/config` block.
 
 Host-specific entries stay in the part of `~/.ssh/config` that mise doesn't manage, and out of
 this repo. Until the keys are in place, git can't sign commits or reach GitHub over SSH.
