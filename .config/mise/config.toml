@@ -23,6 +23,8 @@ java = "temurin-17"
 groovy = "4.0"
 # Shell
 starship = "latest"
+# Git (the git config requires the LFS filter)
+git-lfs = "latest"
 # Infrastructure
 terraform = "latest"
 kubectl = "latest"

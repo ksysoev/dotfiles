@@ -89,8 +89,12 @@ if ((${#restored[@]})); then
   ssh-add --apple-load-keychain </dev/null >/dev/null 2>&1
   missing=()
   for k in "${restored[@]}"; do
-    fp="$(ssh-keygen -lf "$k.pub" 2>/dev/null | awk '{print $2}')"
-    ssh-add -l 2>/dev/null | grep -qF "$fp" || missing+=("$(short "$k")")
+    # Read the fingerprint from the private key (its public part isn't
+    # encrypted), so a missing .pub can't produce an empty match.
+    fp="$(ssh-keygen -lf "$k" </dev/null 2>/dev/null | awk '{print $2}')"
+    if [[ -z "$fp" ]] || ! ssh-add -l 2>/dev/null | grep -qF "$fp"; then
+      missing+=("$(short "$k")")
+    fi
   done
   if ((${#missing[@]})); then
     say "store the passphrases in Keychain once (asks for each passphrase):"
