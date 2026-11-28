@@ -81,6 +81,9 @@ _.path = ["~/go/bin"]
 # Claude Code user settings and instructions (not sessions, history or caches)
 "~/.claude/settings.json" = { source = "~/Documents/Dev/dotfiles/claude/settings.json" }
 "~/.claude/CLAUDE.md" = { source = "~/Documents/Dev/dotfiles/claude/CLAUDE.md" }
+"~/.claude/themes" = { source = "~/Documents/Dev/dotfiles/claude/themes" }
+# Personal skills, linked one by one: ~/.claude/skills/synced is reserved for claude.ai
+"~/.claude/skills/implement-issue" = { source = "~/Documents/Dev/dotfiles/claude/skills/implement-issue" }
 # Login shells and GUI-launched apps: mise and Homebrew on PATH (no brew CLI needed)
 "~/.zprofile/homebrew" = { line = 'export PATH="$HOME/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"' }
 
