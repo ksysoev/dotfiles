@@ -34,6 +34,12 @@ require("lazy").setup({
         version = false, -- always use the latest git commit
         -- version = "*", -- try installing the latest stable version for plugins that support semver
     },
+    -- Plugins marked `dev = true` load from ~/Documents/Dev/<name> when that checkout
+    -- exists, and are cloned from GitHub like any other plugin when it doesn't.
+    dev = {
+        path = "~/Documents/Dev",
+        fallback = true,
+    },
     install = { colorscheme = { "tokyonight", "habamax" } },
     checker = {
         enabled = true, -- check for plugin updates periodically
