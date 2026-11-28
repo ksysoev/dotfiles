@@ -81,6 +81,11 @@ Rules for delegating:
 1. `git status`. If the tree is dirty, **Ask** (see ground rules).
 2. Find the default branch (`gh repo view --json defaultBranchRef -q .defaultBranchRef.name`),
    check it out and fast-forward it from the remote (`git pull --ff-only`).
+   **In a linked worktree** (`git rev-parse --git-dir` differs from
+   `git rev-parse --git-common-dir`, e.g. a session started by `/work-backlog`),
+   the default branch is usually checked out in the main checkout, so don't check it
+   out. Run `git fetch origin <default-branch>` instead, and in Phase 4 create the
+   feature branch from `origin/<default-branch>`.
 3. If the issue lives in a different repo than the current directory, **Ask**.
 4. Create the notes directory (`mkdir -p "$NOTES"`).
 
@@ -133,7 +138,8 @@ how big and risky the change is:
 
 ## Phase 4: Implement
 
-1. Create a feature branch from the updated default branch, in the main context. Use
+1. Create a feature branch from the updated default branch (`origin/<default-branch>`
+   in a linked worktree), in the main context. Use
    the repo's naming convention; if there is none, use `<type>/<issue-number>-<slug>`,
    e.g. `feat/61-split-view`.
 2. Start an implementer subagent (brief: *Implementer*) with `brief.md` and `plan.md`.
@@ -224,6 +230,15 @@ Report to the user briefly:
 - The review budget chosen and why, then what the rounds found, fixed and rejected.
 - What manual verification showed.
 - Assumptions, follow-ups and anything you couldn't verify.
+
+As the very last step, write the same report to `$NOTES/result.md`, whose first
+line is exactly one of these, so a caller such as `/work-backlog` can read the outcome:
+
+- `status: pr-open <pr-url> ci=<green|red|pending>`
+- `status: stopped <one-line reason>` (blocked, needs a decision, or split proposed)
+- `status: failed <one-line reason>`
+
+Write it only once you are done. Don't write it while CI is still running in the background.
 
 The notes directory can stay. It is local, inside `.git`, and useful if the PR
 needs more work later.

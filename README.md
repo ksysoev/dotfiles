@@ -149,6 +149,7 @@ To add a skill, add its folder here and a matching line under `[dotfiles]` in th
 |---|---|
 | `/plan-feature <requirements \| file \| issue>` | Requirements → codebase research → grilling rounds → one issue, or a parent with sub-issues, GitHub dependencies and milestones per phase |
 | `/implement-issue <issue> [rounds]` | GitHub issue → plan → branch → review/fix rounds → manual check → PR → green CI |
+| `/work-backlog [repo] [--milestone <m>] [--parallel <n>]` | Loops over the open backlog (or a milestone) in dependency order: one `/implement-issue` per issue in its own background session and worktree, waiting for merges to unblock the next wave |
 
 If Claude Code ever replaces a symlink with a regular file when it saves settings,
 `mise bootstrap status --missing` reports it. Copy the file back into `claude/` and run
