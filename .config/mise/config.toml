@@ -84,6 +84,7 @@ _.path = ["~/go/bin"]
 "~/.claude/themes" = { source = "~/Documents/Dev/dotfiles/claude/themes" }
 # Personal skills, linked one by one: ~/.claude/skills/synced is reserved for claude.ai
 "~/.claude/skills/implement-issue" = { source = "~/Documents/Dev/dotfiles/claude/skills/implement-issue" }
+"~/.claude/skills/plan-feature" = { source = "~/Documents/Dev/dotfiles/claude/skills/plan-feature" }
 # Login shells and GUI-launched apps: mise and Homebrew on PATH (no brew CLI needed)
 "~/.zprofile/homebrew" = { line = 'export PATH="$HOME/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"' }
 

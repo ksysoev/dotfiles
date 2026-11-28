@@ -147,6 +147,7 @@ To add a skill, add its folder here and a matching line under `[dotfiles]` in th
 
 | Skill | Use |
 |---|---|
+| `/plan-feature <requirements \| file \| issue>` | Requirements → codebase research → grilling rounds → one issue, or a parent with sub-issues, GitHub dependencies and milestones per phase |
 | `/implement-issue <issue> [rounds]` | GitHub issue → plan → branch → review/fix rounds → manual check → PR → green CI |
 
 If Claude Code ever replaces a symlink with a regular file when it saves settings,
