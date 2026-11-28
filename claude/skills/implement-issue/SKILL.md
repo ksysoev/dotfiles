@@ -9,7 +9,8 @@ allowed-tools: Bash(gh issue view *) Bash(gh pr view *) Bash(gh pr checks *) Bas
 
 # Implement a GitHub issue end to end
 
-Issue: `$issue`. Review rounds: `$rounds` (if it is empty, use 3).
+Issue: `$issue`. Review rounds: `$rounds` (if it is empty, pick it yourself from
+the size of the change; see "Choosing the number of review rounds").
 
 You own this issue until there is an open, green pull request for it. Work through
 the phases in order and keep a todo list with one item per phase. Don't stop
@@ -107,7 +108,28 @@ enough that an implementer starting from zero can follow it without guessing.
 Prefer the smallest change that meets the criteria and fits the existing design.
 If the issue is too big for one reviewable PR, propose a split and **Ask**.
 
+End the plan with the size of the change and the review rounds it gets (see below).
+
 Show the plan to the user, then continue unless they stop you.
+
+### Choosing the number of review rounds
+
+If the user passed `rounds`, use it and skip this. Otherwise pick the budget from
+how big and risky the change is:
+
+| Size | Typical change | Max rounds |
+|---|---|---|
+| Small | Small bug fix or small feature: one area, a few files, roughly under ~150 changed lines, no new design | 1 |
+| Medium | A feature or fix across several files or modules, or with a new design decision | 2 |
+| Large | A big feature with a lot of code (roughly 500+ changed lines or many modules), or any change to risky code: concurrency, security, auth, persistence, migrations, public APIs | 3 |
+
+- Never go above 3 unless the user asks.
+- When in doubt between two sizes, pick the larger one. Rounds stop early anyway
+  when they find nothing.
+- Write the size, the budget and a one-line reason in `plan.md`.
+- After Phase 4, check the real size with `git diff --stat <default-branch>...HEAD`.
+  If it turned out clearly bigger or smaller than planned, change the budget and
+  note why in `log.md`.
 
 ## Phase 4: Implement
 
@@ -125,8 +147,11 @@ Show the plan to the user, then continue unless they stop you.
 
 ## Phase 5: Review rounds
 
-Repeat up to `rounds` times (3 by default). Stop early when a round finds nothing
-that is both valid and in scope.
+Repeat up to the round budget: `rounds` if the user gave it, otherwise the budget
+from `plan.md` (see "Choosing the number of review rounds"). Stop early when a round
+finds nothing that is both valid and in scope. If the last allowed round still finds
+valid in-scope problems, fix them, but don't start another round on your own. Say in
+the final report that the budget ran out.
 
 1. **Review.** If a `code-review` skill or command is available, run it on the
    current changes. Otherwise start a reviewer subagent (brief: *Reviewer*).
@@ -174,7 +199,7 @@ service), say so plainly and describe what a human should check.
    - `Closes #<issue>` (or the repo's linking convention).
    - **Implementation notes**: the approach and the assumptions you made.
    - **Testing**: the automated checks and manual steps, with what you saw.
-   - **Review**: a short summary of the review rounds.
+   - **Review**: a short summary of the review rounds (how many ran out of the budget, and why that budget).
    - **Follow-ups**: valid out-of-scope findings, if any.
    Use a draft PR only if the repo or the user asks for one.
 
@@ -196,7 +221,7 @@ service), say so plainly and describe what a human should check.
 Report to the user briefly:
 - The PR link and its CI status.
 - How each acceptance criterion is met and proven.
-- What the review rounds found, fixed and rejected.
+- The review budget chosen and why, then what the rounds found, fixed and rejected.
 - What manual verification showed.
 - Assumptions, follow-ups and anything you couldn't verify.
 
