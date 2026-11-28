@@ -141,6 +141,14 @@ the Tokyo Night Moon palette LazyVim uses by default. Pick another in `/theme`.
 The folder isn't named `.claude/`, because Claude Code would also load that as this repo's
 own project settings. Sessions, history, caches and plugins stay local in `~/.claude`.
 
+Personal skills live in [`claude/skills/`](claude/skills/). Each one is linked into
+`~/.claude/skills/` on its own, because Claude Code reserves `~/.claude/skills/synced/`.
+To add a skill, add its folder here and a matching line under `[dotfiles]` in the mise config.
+
+| Skill | Use |
+|---|---|
+| `/implement-issue <issue> [rounds]` | GitHub issue → plan → branch → review/fix rounds → manual check → PR → green CI |
+
 If Claude Code ever replaces a symlink with a regular file when it saves settings,
 `mise bootstrap status --missing` reports it. Copy the file back into `claude/` and run
 `mise bootstrap --only dotfiles`.
